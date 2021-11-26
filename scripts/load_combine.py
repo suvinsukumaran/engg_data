@@ -10,9 +10,6 @@ import os
 import shutil
 import zipfile
 
-def logging(text):
-    print(text)>>log.txt
-    
 def create_path(dir_path):
     """"Create output, processed and log paths from the file path provided"""
     parent_dir= dir_path.rsplit( "\\", 1 )[ 0 ]
