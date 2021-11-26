@@ -74,7 +74,7 @@ if __name__ == "__main__":
                         if i>1:
                             df1=df1.append(df2)            #If more than one file processed, append data into df1
                     else:    
-                        print(file," not processed. csv files expected")
+                        print(file," not processed. csv files expected(other than Combined.csv)")
                 else:
                     print(file," - Directory found. Not considered for processing ")
             if i>=1:            #Checking for files processed. If one or more processed, proceed into the condition
