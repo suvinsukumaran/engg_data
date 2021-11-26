@@ -26,17 +26,27 @@ def create_path(dir_path):
     sys.stdout = open(logfile, 'w')            #Capturing logs in the log directory
     return(output_dir,processed_dir,log_dir,parent_dir)
 
-def extract_zip(zfile,dir):
+def extract_zip(zfile,dir_path):
     """Extract the files from the zip folder"""
     if os.path.isfile(zfile):
         if not os.path.exists(dir_path):
-            os.makedirs(dir_path)			#create the directory if not present for extraction
+            os.makedirs(dir_path)            #create the directory if not present for extraction
         with zipfile.ZipFile(zfile, 'r') as zip_ref:
             zip_ref.extractall(dir_path)
     else:
-        print("Error : Zipfile passed not present in path")			#exit if zipfile path wrongly mentioned
+        print("Error : Zipfile passed not present in path")            #exit if zipfile path wrongly mentioned
         exit(0)
     return 'Extracted File - '+zfile+' into path - '+dir_path
+
+def sort_dup_remove(df):
+    """Removes the duplicates and sort the data in dataframe"""
+    df1=df.drop_duplicates(subset=None, keep='first', inplace=False)            #Removing duplicate entries from the dataframe
+    list1=df1.values.tolist()            #Converting data frame into list
+    list1=sorted(list1, key=lambda v:[int(i) for i in v[0].split('.')])            #Sorting the data in dataframe in descending order
+    df1=pd.DataFrame(list1, columns=['Source IP','Environment'])            #Converting list to dataframe after sorting
+    df1.to_csv(output_dir+"\Combined"+"_"+str(datetime.datetime.today().strftime('%Y%m%d%H%M%S'))+".csv", index=False)            #Writing the results into Combined.csv file in output folder created
+    df1.to_csv(dir_path+"\Combined.csv", index=False)            #Writing the results into Combined.csv file in folder created
+    return 'Combined file created in path - '+output_dir+'\nCombined file also available in the files folder - '+dir_path
 
 if __name__ == "__main__":
     try:
@@ -78,16 +88,10 @@ if __name__ == "__main__":
                 else:
                     print(file," - Directory found. Not considered for processing ")
             if i>=1:            #Checking for files processed. If one or more processed, proceed into the condition
-                df1=df1.drop_duplicates(subset=None, keep='first', inplace=False)            #Removing duplicate entries from the dataframe
-                list1=df1.values.tolist()            #Converting data frame into list
-                list1=sorted(list1, key=lambda v:[int(i) for i in v[0].split('.')])            #Sorting the data in dataframe in descending order
-                df1=pd.DataFrame(list1, columns=['Source IP','Environment'])            #Converting list to dataframe after sorting
-                df1.to_csv(output_dir+"\Combined"+"_"+str(datetime.datetime.today().strftime('%Y%m%d%H%M%S'))+".csv", index=False)            #Writing the results into Combined.csv file in output folder created
-                df1.to_csv(dir_path+"\Combined.csv", index=False)            #Writing the results into Combined.csv file in folder created
+                print(sort_dup_remove(df1))
                 zip_file=dir_path.rsplit( "\\", 1 )[ 1 ]
-                shutil.move(zfile,processed_dir+'\\'+zip_file+"_"+str(datetime.datetime.today().strftime('%Y%m%d%H%M%S'))+".zip")			#Move the zip file into proecessed directory
+                shutil.move(zfile,processed_dir+'\\'+zip_file+"_"+str(datetime.datetime.today().strftime('%Y%m%d%H%M%S'))+".zip")            #Move the zip file into proecessed directory
                 shutil.make_archive(zip_file, 'zip', dir_path)
-                print("Combined file created in path ",output_dir,"\nCombined file also available in the files folder")
             else:
                 print("No valid files found for processing")
     except (IndexError, ValueError, RuntimeError):
