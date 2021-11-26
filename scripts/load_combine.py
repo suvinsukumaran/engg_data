@@ -30,13 +30,14 @@ def create_path(dir_path):
     return(output_dir,processed_dir,log_dir,parent_dir)
 
 def extract_zip(zfile,dir):
+    """Extract the files from the zip folder"""
     if os.path.isfile(zfile):
         if not os.path.exists(dir_path):
-            os.makedirs(dir_path)
+            os.makedirs(dir_path)			#create the directory if not present for extraction
         with zipfile.ZipFile(zfile, 'r') as zip_ref:
             zip_ref.extractall(dir_path)
     else:
-        print("Error : Zipfile passed not present in path")
+        print("Error : Zipfile passed not present in path")			#exit if zipfile path wrongly mentioned
         exit(0)
     return 'Extracted File - '+zfile+' into path - '+dir_path
 
@@ -87,7 +88,7 @@ if __name__ == "__main__":
                 df1.to_csv(output_dir+"\Combined"+"_"+str(datetime.datetime.today().strftime('%Y%m%d%H%M%S'))+".csv", index=False)            #Writing the results into Combined.csv file in output folder created
                 df1.to_csv(dir_path+"\Combined.csv", index=False)            #Writing the results into Combined.csv file in folder created
                 zip_file=dir_path.rsplit( "\\", 1 )[ 1 ]
-                shutil.move(zfile,processed_dir+'\\'+zip_file+"_"+str(datetime.datetime.today().strftime('%Y%m%d%H%M%S'))+".zip")
+                shutil.move(zfile,processed_dir+'\\'+zip_file+"_"+str(datetime.datetime.today().strftime('%Y%m%d%H%M%S'))+".zip")			#Move the zip file into proecessed directory
                 shutil.make_archive(zip_file, 'zip', dir_path)
                 print("Combined file created in path ",output_dir,"\nCombined file also available in the files folder")
             else:
