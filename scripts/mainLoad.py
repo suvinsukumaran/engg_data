@@ -1,3 +1,9 @@
+"""
+mainLoad.py
+Load and combine csv files in a directory
+Argument to be passed - Zipfile with absolute path
+"""
+
 from load_combine import *
 
 def read_files(files,dir_path):

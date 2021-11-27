@@ -1,6 +1,6 @@
 """
-Load and combine csv files in a directory
-Argument to be passed - Zipfile with absolute path
+load_combine.py
+Functions for creating the combined path called from mainLoad.py
 """
 
 import pandas as pd
